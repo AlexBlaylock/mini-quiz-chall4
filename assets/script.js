@@ -47,6 +47,15 @@ function answerQuestion() {
 
 function endQuiz() {
     clearInterval(timerId);
-    quixBox.style.disply = "none";    
-    quizOverBox.style.display = "block";
+}
+
+function startTimer(){
+    timerId = setInterval(remainingTime, 300);
+}
+
+function remainingTime() {
+    time--;
+    if (time <= 0) {
+        endQuiz();
+    }
 }
