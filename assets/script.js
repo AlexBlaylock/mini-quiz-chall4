@@ -16,6 +16,14 @@ submitBtn.addEventListener("click", userAnswer);
 saveQuizBtn.addEventListener("click", save-quiz);
 
 
+// Questions Array
+
+const questions = [
+    {
+        question: "What does CSS stand for?"
+    }
+]
+
 // start quiz function
 function startQuiz() {
 displayQuestion();
