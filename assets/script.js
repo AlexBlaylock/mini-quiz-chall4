@@ -57,9 +57,6 @@ const questions = [{
     c: "3. HML",
     d: "4. HTMKLG",
     correct: "1. HTML",
-},
-
-{
 }];
 // getelementbyid over query selector due to it being a specific element
 var startGameBtn = document.getElementById("start");
