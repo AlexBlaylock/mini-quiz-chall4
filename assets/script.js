@@ -51,7 +51,7 @@ const questions = [{
 },
 {
 }];
-
+// getelementbyid over query selector due to it being a specific element
 var startGameBtn = document.getElementById("start");
 var timerEl = document.getElementById("countdown");
 
@@ -68,7 +68,7 @@ function timer() {
         } else {
             endQuizPage();
         }
-    }, 1000);
+    }, 1000); //1000 here means that setInterval should be executed every 1000ms
 }
 function adjustTime(amount) {
     timeRemaining += amount;
@@ -78,7 +78,7 @@ function adjustTime(amount) {
     // switched to template literal from a normal string + string
     timerEl.textContent = `Time remaining: ${timeRemaining}s`;
 }
-
+// executes timer function
 startGameBtn.onclick = timer;
 var renderQuestion = function (question) {
     questionContainer.innerHTML = "";
@@ -86,6 +86,7 @@ var renderQuestion = function (question) {
     var questionHeader = document.createElement("h2");
     questionHeader.textContent = question.q;
 
+    // creates clickable buttons that correspond with letter choice.
     var answerA = document.createElement("button");
     answerA.textContent = question.a;
     answerA.addEventListener("click", answerClick);
@@ -129,6 +130,7 @@ var answerClick = function(event) {
         } else {renderQuestion(questions[currentQuestionIndex])};
 
     }
+    // Thi
     else if (chosenAnswer === correctAnswer) {
         currentQuestionIndex++;
         answerDetermination.textContent = "Correct!";
@@ -150,7 +152,9 @@ function resetDisplay() {
     document.querySelector("#intro-page").style.display = "none";
 }
 function highScores() {
+    // stores high score on local storage, meaning your score will save.
     let data = localStorage.getItem("object");
+    // pulls data
     let getData = JSON.parse(data);
     let name = getData.name;
     let score = getData.score;
@@ -169,7 +173,7 @@ function endQuizPage() {
     clearInterval(quizDuration);
     var endPage = document.createElement("h2");
     questionContainer.appendChild(endPage);
-
+    // assigning a blank string to a variable to use for initialbox.
     let blank = document.querySelector("#answer-determination");
     blank.innerHTML = "";
     // switched to template literal
@@ -181,9 +185,9 @@ function endQuizPage() {
     var submitInitialBtn = document.createElement("button");
     submitInitialBtn.textContent = "Submit";
     blank.appendChild(submitInitialBtn);
-
+    // allows you to store name
     submitInitialBtn.addEventListener("click", () => {
-        
+        // makes it to where you need to submit initials
         if (initialBox.value.length === 0) return false;
 
         let storeInitials = (...input) => {
@@ -191,7 +195,7 @@ function endQuizPage() {
             localStorage.setItem("object", data)
         }
         storeInitials(initialBox.value, userScore);
-
+        // resets game back to original page.
         var playAgain = document.createElement("button");
         playAgain.textContent= "Play Again!";
         blank.appendChild(playAgain);
