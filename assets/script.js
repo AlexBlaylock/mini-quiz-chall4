@@ -67,6 +67,7 @@ function timer() {
      // switched to template literal from a normal string + string
     timerEl.textContent = `Time remaining: ${timeRemaining}s`;
     quizLength = setInterval(function () {
+        // tick down timer every 1 second
         if (timeRemaining > 0) {
             adjustTime(-1);
         } else {
@@ -76,6 +77,7 @@ function timer() {
 }
 // function to tick time down
 function adjustTime(amount) {
+    // adjusts time until that there is 0 seconds remaining, 
     timeRemaining += amount;
     if (timeRemaining < 0) {
         timeRemaining = 0;
@@ -119,7 +121,7 @@ var answerClick = function(event) {
 
 
 startGameBtn.onclick = timer;
-// questions + answer options
+// questions + answer options, create elements
 var renderQuestion = function (question) {
     questionBox.innerHTML = "";
 
