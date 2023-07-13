@@ -41,68 +41,176 @@ const questions = [{
     correct: "3. 98%",
 },
 {
+    
+    q: "Github has ___ amount of users?",
+    a: "1. 300 million",
+    b: "2. 500 thousand",
+    c: "3. 100 million",
+    d: "4. 30 million",
+    correct: "3. 100 million",
+},
+{
 }];
 
-// quiz query/element selectors
-var startGameBtn = document.getElementById("#start-button")
-var quizBox = document.querySelector("#quiz-box")
-var quizQuestion = document.querySelector("#question-header")
-var userAnswer = document.querySelector("#user-answer")
-var submitBtn = document.querySelector("#submit-answer")
+var startGameBtn = document.getElementById("start");
+var timerEl = document.getElementById("countdown");
 
-// save game query selectors
-var quizOverBox = document.querySelector("#quiz-over-box")
-var initialLabel = document.querySelector("#initialsLabel")
-var saveQuizBtn = document.querySelector("#save-quiz")
+var timeRemaining = 300;
+var quizDuration;
+var questionContainer = document.querySelector("#quiz-container");
 
-// button event listeners
-startGameBtn.addEventListener("click", quizStart);
-submitBtn.addEventListener("click", userAnswer);
-saveQuizBtn.addEventListener("click", save-quiz);
-
-
-
-
-// start quiz function
-function startQuiz() {
-displayQuestion();
-startTime();
-}
-
-function displayQuestion() { 
-    let currentQuestion = questions[currentQuestionuestionIndex];
-    questionEl.textContent = currentQuestion.question;
-}
-
-
-function answerQuestion() {
-    let currentQuestion = questions[currentQuestionIndex]
-    let userAnswer = answerInput.value.trim().toLowerCase();
-
-    if (userAnswer === currentQ.answer.toLowerCase()) {
-        currentQuestionIndex++;
-        if (currentQuestion < questions.length) {
-            displayQuestion();
+function timer() {
+    // // switched to temperate literal from a normal string + string
+    timerEl.textContent = `Time remaining: ${timeRemaining}s`;
+    quizDuration = setInterval(function () {
+        if (timeRemaining > 0) {
+            adjustTime(-1);
         } else {
-            endQuiz();
+            endQuizPage();
         }
-    } else {
-        time -= 30;
+    }, 1000);
+}
+function adjustTime(amount) {
+    timeRemaining += amount;
+    if (timeRemaining < 0) {
+        timeRemaining = 0;
     }
-    answerInput.value = ""
+    // switched to temperate literal from a normal string + string
+    timerEl.textContent = `Time remaining: ${timeRemaining}s`;
+}
+`Time remaining: ${timeRemaining}s`
+startGameBtn.onclick = timer;
+var renderQuestion = function (question) {
+    questionContainer.innerHTML = "";
+// quiz question and answers, createElement creates corresponding HTML element.
+    var questionHeader = document.createElement("h2");
+    questionHeader.textContent = question.q;
+
+    var answerA = document.createElement("button");
+    answerA.textContent = question.a;
+    answerA.addEventListener("click", answerClick);
+
+    var answerB = document.createElement("button");
+    answerB.textContent = question.b;
+    answerB.addEventListener("click", answerClick);
+
+    var answerC = document.createElement("button");
+    answerC.textContent = question.c;
+    answerC.addEventListener("click", answerClick);
+
+    var answerD = document.createElement("button");
+    answerD.textContent = question.d;
+    answerD.addEventListener("click", answerClick);
+
+    questionContainer.appendChild(questionHeader);
+    questionContainer.appendChild(answerA);
+    questionContainer.appendChild(answerB);
+    questionContainer.appendChild(answerC);
+    questionContainer.appendChild(answerD);
 }
 
-function endQuiz() {
-    clearInterval(timerId);
-}
+var currentQuestionIndex = 0;
+var userScore = 0;
+var correctAnswer = questions[currentQuestionIndex].correct;
+var clickViewScores = document.getElementById("view-score");
 
-function startTimer(){
-    timerId = setInterval(remainingTime, 300);
-}
+var answerClick = function(event) {
+    event.preventDefault();
+    var userAnswer = event.target.textContent;
+    correctAnswer = questions[currentQuestionIndex].correct;
+    // checks answer if it is right or wrong
+    var answerDetermination = document.querySelector("#answer-determination");
+    if (userAnswer !== correctAnswer) {
+        adjustTime(-10);
+        answerDetermination.textContent = "Wrong!";
+        currentQuestionIndex++;
+        if (currentQuestionIndex >= questions.length) {
+            endQuizPage();
+        } else {renderQuestion(questions[currentQuestionIndex])};
 
-function remainingTime() {
-    time--;
-    if (time <= 0) {
-        endQuiz();
     }
+    else if (userAnswer === correctAnswer) {
+        currentQuestionIndex++;
+        answerDetermination.textContent = "Correct!";
+        userScore++;
+        if (currentQuestionIndex >= questions.length) {
+            endQuizPage();
+        } else {renderQuestion(questions[currentQuestionIndex])};
+    }
+};
+
+var quiz = function (event) {
+    event.preventDefault();
+    resetDisplay();
+    renderQuestion(questions[currentQuestionIndex]);
+};
+
+function resetDisplay() {
+    questionContainer.innerHTML="";
+    document.querySelector("#intro-page").style.display = "none";
 }
+function highScores() {
+    let data = localStorage.getItem("object");
+    let getData = JSON.parse(data);
+    let name = getData.name;
+    let score = getData.score;
+    questionContainer.innerHTML = "";
+    questionContainer.innerHTML = name + " " + score;
+}
+clickViewScores.addEventListener("click", () => {
+    highScores();
+})
+
+var initials; 
+function endQuizPage() {
+    resetDisplay();
+    timerEl.textContent = "";
+    clearInterval(quizDuration);
+    var endPage = document.createElement("h2");
+    questionContainer.appendChild(endPage);
+
+    let blank = document.querySelector("#answer-determination");
+    blank.innerHTML = "";
+
+    endPage.innerHTML = "All done! Your final score is " + userScore + ". Enter your initials to save";
+
+    var initialBox = document.createElement("input");
+    blank.appendChild(initialBox);
+
+    var submitInitialBtn = document.createElement("button");
+    submitInitialBtn.textContent = "Submit";
+    blank.appendChild(submitInitialBtn);
+
+    submitInitialBtn.addEventListener("click", () => {
+        
+        if (initialBox.value.length === 0) return false;
+
+        let storeInitials = (...input) => {
+            let data = JSON.stringify({ "name":input[0], "score":input[1]})
+            localStorage.setItem("object", data)
+        }
+        storeInitials(initialBox.value, userScore);
+
+        var playAgain = document.createElement("button");
+        playAgain.textContent= "Play Again!";
+        blank.appendChild(playAgain);
+
+        playAgain.addEventListener("click", () => {
+            location.reload();
+        })
+    });
+
+    document.querySelector("input").value = "";
+    // submits initials
+    initialBox.addEventListener("submit", endQuizPage);
+    
+};
+function renderInitials() {
+    submitInitialBtn.addEventListener('click', function(event) {
+        event.preventDefault;
+}
+)};
+
+startGameBtn.addEventListener('click', quiz);
+
+

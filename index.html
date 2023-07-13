@@ -4,29 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Code Quiz</title>
+    <link rel="stylesheet" href="./assets/style.css">
 </head>
 <body>
-    <h1>Code Quiz</h1>
-    <button id="start-button">Press to Play</button>
-<!-- Quiz Section -->
-    <div id="quiz-box"></div>
-    <h2 id="question-header"></h2>
-    <div id="answerBtns">
-        <button class="answerBtn"></button>
-        <button class="answerBtn"></button>
-        <button class="answerBtn"></button>
+    <div>
+        <button class="view-score" id="view-score">View high score</button>
     </div>
-    <button id="submit-answer">Submit</button>
-
-</div>
-
-    <div id="quiz-over-box">
-    <h2>GG</h2>
-    <label for=initials-label>Enter Initials:</label>
-    <input type="text" id="initials-label>">
-    <button id="save-quiz">Save</button>
-</div>
+    <div id="intro-page">
+    <h1>Coding Quiz Challenge</h1>
+    <p>Try to answer the following code-related questions within the time limit.
+        Keep in mind that incorrect answers will penalize your score/time by ten seconds!</p>
+    <button id="start">Start Quiz</button>
+    </div>
+    <h2 id="countdown"></h2>
+    <div class="quiz-container" id="quiz-container"></div>
+    <div id="answer-determination"></div>
     
-<script src="./assets/js/script.js"></script>
+<script src="./assets/script.js"></script>
 </body>
 </html>
