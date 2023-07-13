@@ -55,14 +55,14 @@ const questions = [{
 var startGameBtn = document.getElementById("start");
 var timerEl = document.getElementById("countdown");
 
-var timeRemaining = 300;
-var quizDuration;
+var timeRemaining = 180;
+var quizLength;
 var questionContainer = document.querySelector("#quiz-container");
 
 function timer() {
-    // // switched to temperate literal from a normal string + string
+    // // switched to template literal from a normal string + string
     timerEl.textContent = `Time remaining: ${timeRemaining}s`;
-    quizDuration = setInterval(function () {
+    quizLength = setInterval(function () {
         if (timeRemaining > 0) {
             adjustTime(-1);
         } else {
@@ -75,10 +75,10 @@ function adjustTime(amount) {
     if (timeRemaining < 0) {
         timeRemaining = 0;
     }
-    // switched to temperate literal from a normal string + string
+    // switched to template literal from a normal string + string
     timerEl.textContent = `Time remaining: ${timeRemaining}s`;
 }
-`Time remaining: ${timeRemaining}s`
+
 startGameBtn.onclick = timer;
 var renderQuestion = function (question) {
     questionContainer.innerHTML = "";
@@ -116,12 +116,12 @@ var clickViewScores = document.getElementById("view-score");
 
 var answerClick = function(event) {
     event.preventDefault();
-    var userAnswer = event.target.textContent;
+    var chosenAnswer = event.target.textContent;
     correctAnswer = questions[currentQuestionIndex].correct;
     // checks answer if it is right or wrong
     var answerDetermination = document.querySelector("#answer-determination");
-    if (userAnswer !== correctAnswer) {
-        adjustTime(-10);
+    if (chosenAnswer !== correctAnswer) {
+        adjustTime(-60);
         answerDetermination.textContent = "Wrong!";
         currentQuestionIndex++;
         if (currentQuestionIndex >= questions.length) {
@@ -129,7 +129,7 @@ var answerClick = function(event) {
         } else {renderQuestion(questions[currentQuestionIndex])};
 
     }
-    else if (userAnswer === correctAnswer) {
+    else if (chosenAnswer === correctAnswer) {
         currentQuestionIndex++;
         answerDetermination.textContent = "Correct!";
         userScore++;
@@ -155,7 +155,8 @@ function highScores() {
     let name = getData.name;
     let score = getData.score;
     questionContainer.innerHTML = "";
-    questionContainer.innerHTML = name + " " + score;
+    // switched to template litral
+    questionContainer.innerHTML = `${name} ${score}`;
 }
 clickViewScores.addEventListener("click", () => {
     highScores();
@@ -171,8 +172,8 @@ function endQuizPage() {
 
     let blank = document.querySelector("#answer-determination");
     blank.innerHTML = "";
-
-    endPage.innerHTML = "All done! Your final score is " + userScore + ". Enter your initials to save";
+    // switched to template literal
+    endPage.innerHTML = `Congratulations, your score was ${userScore}. Please, enter your initials!`;
 
     var initialBox = document.createElement("input");
     blank.appendChild(initialBox);
