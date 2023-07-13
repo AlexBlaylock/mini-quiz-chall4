@@ -59,7 +59,7 @@ const questions = [{
 // global variables, getelementbyid is more specific then query selectors.
 var startGameBtn = document.getElementById("start");
 var timerEl = document.getElementById("countdown");
-var timeRemaining = 120;
+var timeRemaining = 120; // adjusted time variable
 var quizLength;
 var questionBox = document.querySelector("#quiz-box");
 
@@ -153,6 +153,7 @@ var renderQuestion = function (question) {
 // begins quiz
 var quiz = function (event) {
     event.preventDefault();
+    // resets quiz to initial state
     resetQuiz();
     renderQuestion(questions[currentQuestionIndex]);
 };
@@ -178,6 +179,7 @@ clickViewScores.addEventListener("click", () => {
 
 var initials; 
 function endQuizPage() {
+    // resets quiz to initial state
     resetQuiz();
     timerEl.textContent = "";
     clearInterval(quizLength);
@@ -188,6 +190,7 @@ function endQuizPage() {
     let blank = document.querySelector("#answer-determination");
     blank.innerHTML = "";
 
+    // added template literal
     endPage.innerHTML = `Congratulations on completing the quiz, your score was: ${userScore}!`;
 
     var initialBox = document.createElement("input");
@@ -229,3 +232,4 @@ function renderInitials() {
 )};
 
 startGameBtn.addEventListener('click', quiz);
+
