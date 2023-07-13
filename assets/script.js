@@ -50,6 +50,16 @@ const questions = [{
     correct: "3. 100 million",
 },
 {
+    
+    q: "What is HyperText Markup Language?",
+    a: "1. HTML",
+    b: "2. HOTMAIL",
+    c: "3. HML",
+    d: "4. HTMKLG",
+    correct: "1. HTML",
+},
+
+{
 }];
 // getelementbyid over query selector due to it being a specific element
 var startGameBtn = document.getElementById("start");
@@ -57,7 +67,7 @@ var timerEl = document.getElementById("countdown");
 
 var timeRemaining = 180;
 var quizLength;
-var questionContainer = document.querySelector("#quiz-container");
+var questionBox = document.querySelector("#quiz-box");
 
 function timer() {
     // // switched to template literal from a normal string + string
@@ -81,7 +91,7 @@ function adjustTime(amount) {
 // executes timer function
 startGameBtn.onclick = timer;
 var renderQuestion = function (question) {
-    questionContainer.innerHTML = "";
+    questionBox.innerHTML = "";
 // quiz question and answers, createElement creates corresponding HTML element.
     var questionHeader = document.createElement("h2");
     questionHeader.textContent = question.q;
@@ -103,11 +113,11 @@ var renderQuestion = function (question) {
     answerD.textContent = question.d;
     answerD.addEventListener("click", answerClick);
 
-    questionContainer.appendChild(questionHeader);
-    questionContainer.appendChild(answerA);
-    questionContainer.appendChild(answerB);
-    questionContainer.appendChild(answerC);
-    questionContainer.appendChild(answerD);
+    questionBox.appendChild(questionHeader);
+    questionBox.appendChild(answerA);
+    questionBox.appendChild(answerB);
+    questionBox.appendChild(answerC);
+    questionBox.appendChild(answerD);
 }
 
 var currentQuestionIndex = 0;
@@ -130,7 +140,7 @@ var answerClick = function(event) {
         } else {renderQuestion(questions[currentQuestionIndex])};
 
     }
-    // Thi
+    
     else if (chosenAnswer === correctAnswer) {
         currentQuestionIndex++;
         answerDetermination.textContent = "Correct!";
@@ -148,7 +158,7 @@ var quiz = function (event) {
 };
 
 function resetDisplay() {
-    questionContainer.innerHTML="";
+    questionBox.innerHTML="";
     document.querySelector("#intro-page").style.display = "none";
 }
 function highScores() {
@@ -158,9 +168,9 @@ function highScores() {
     let getData = JSON.parse(data);
     let name = getData.name;
     let score = getData.score;
-    questionContainer.innerHTML = "";
+    questionBox.innerHTML = "";
     // switched to template litral
-    questionContainer.innerHTML = `${name} ${score}`;
+    questionBox.innerHTML = `${name} ${score}`;
 }
 clickViewScores.addEventListener("click", () => {
     highScores();
@@ -172,7 +182,7 @@ function endQuizPage() {
     timerEl.textContent = "";
     clearInterval(quizDuration);
     var endPage = document.createElement("h2");
-    questionContainer.appendChild(endPage);
+    questionBox.appendChild(endPage);
     // assigning a blank string to a variable to use for initialbox.
     let blank = document.querySelector("#answer-determination");
     blank.innerHTML = "";
