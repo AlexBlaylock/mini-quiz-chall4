@@ -1,4 +1,4 @@
-// questions
+// questions i created.
 const questions = [{
     q: "When was JavaScript created?",
     a: "1. 1995",
@@ -41,7 +41,6 @@ const questions = [{
     correct: "3. 98%",
 },
 {
-    
     q: "Github has ___ amount of users?",
     a: "1. 300 million",
     b: "2. 500 thousand",
@@ -57,7 +56,7 @@ const questions = [{
     d: "4. HTMKLG",
     correct: "1. HTML",
 }];
-
+// global variables, getelementbyid is more specific then query selectors.
 var startGameBtn = document.getElementById("start");
 var timerEl = document.getElementById("countdown");
 var timeRemaining = 120;
@@ -73,8 +72,9 @@ function timer() {
         } else {
             endQuizPage();
         }
-    }, 1000);
+    }, 1000); //set interval will update every 1000ms
 }
+// function to tick time down
 function adjustTime(amount) {
     timeRemaining += amount;
     if (timeRemaining < 0) {
@@ -84,11 +84,13 @@ function adjustTime(amount) {
     timerEl.textContent = `Time remaining: ${timeRemaining}s`;
 }
 
+// variables for questions and score
 var currentQuestionIndex = 0;
 var userScore = 0;
 var correctAnswer = questions[currentQuestionIndex].correct;
 var clickViewScores = document.getElementById("view-score");
 
+// function for clicking on answers, if wrong -30s, if right no time is lost.
 var answerClick = function(event) {
     event.preventDefault();
     var userAnswer = event.target.textContent;
@@ -104,6 +106,7 @@ var answerClick = function(event) {
         } else {renderQuestion(questions[currentQuestionIndex])};
 
     }
+    // correct answer statement
     else if (userAnswer === correctAnswer) {
         currentQuestionIndex++;
         answerDetermination.textContent = "Correct!";
@@ -178,6 +181,7 @@ function endQuizPage() {
     resetQuiz();
     timerEl.textContent = "";
     clearInterval(quizLength);
+    // creat eleemnts to dynamically create buttons and input boxes.
     var endPage = document.createElement("h2");
     questionBox.appendChild(endPage);
 
