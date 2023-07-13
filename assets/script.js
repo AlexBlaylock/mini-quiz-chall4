@@ -50,7 +50,6 @@ const questions = [{
     correct: "3. 100 million",
 },
 {
-    
     q: "What is HyperText Markup Language?",
     a: "1. HTML",
     b: "2. HOTMAIL",
@@ -58,16 +57,15 @@ const questions = [{
     d: "4. HTMKLG",
     correct: "1. HTML",
 }];
-// getelementbyid over query selector due to it being a specific element
+
 var startGameBtn = document.getElementById("start");
 var timerEl = document.getElementById("countdown");
-
-var timeRemaining = 180;
+var timeRemaining = 120;
 var quizLength;
 var questionBox = document.querySelector("#quiz-box");
 
 function timer() {
-    // // switched to template literal from a normal string + string
+     // switched to template literal from a normal string + string
     timerEl.textContent = `Time remaining: ${timeRemaining}s`;
     quizLength = setInterval(function () {
         if (timeRemaining > 0) {
@@ -75,7 +73,7 @@ function timer() {
         } else {
             endQuizPage();
         }
-    }, 1000); //1000 here means that setInterval should be executed every 1000ms
+    }, 1000);
 }
 function adjustTime(amount) {
     timeRemaining += amount;
@@ -85,15 +83,46 @@ function adjustTime(amount) {
     // switched to template literal from a normal string + string
     timerEl.textContent = `Time remaining: ${timeRemaining}s`;
 }
-// executes timer function
+
+var currentQuestionIndex = 0;
+var userScore = 0;
+var correctAnswer = questions[currentQuestionIndex].correct;
+var clickViewScores = document.getElementById("view-score");
+
+var answerClick = function(event) {
+    event.preventDefault();
+    var userAnswer = event.target.textContent;
+    correctAnswer = questions[currentQuestionIndex].correct;
+    // determine if answer is wrong or right
+    var answerDetermination = document.querySelector("#answer-determination");
+    if (userAnswer !== correctAnswer) {
+        adjustTime(-30);
+        answerDetermination.textContent = "Wrong!";
+        currentQuestionIndex++;
+        if (currentQuestionIndex >= questions.length) {
+            endQuizPage();
+        } else {renderQuestion(questions[currentQuestionIndex])};
+
+    }
+    else if (userAnswer === correctAnswer) {
+        currentQuestionIndex++;
+        answerDetermination.textContent = "Correct!";
+        userScore++;
+        if (currentQuestionIndex >= questions.length) {
+            endQuizPage();
+        } else {renderQuestion(questions[currentQuestionIndex])};
+    }
+};
+
+
 startGameBtn.onclick = timer;
+// questions + answer options
 var renderQuestion = function (question) {
     questionBox.innerHTML = "";
-// quiz question and answers, createElement creates corresponding HTML element.
+
     var questionHeader = document.createElement("h2");
     questionHeader.textContent = question.q;
 
-    // creates clickable buttons that correspond with letter choice.
     var answerA = document.createElement("button");
     answerA.textContent = question.a;
     answerA.addEventListener("click", answerClick);
@@ -117,56 +146,27 @@ var renderQuestion = function (question) {
     questionBox.appendChild(answerD);
 }
 
-var currentQuestionIndex = 0;
-var userScore = 0;
-var correctAnswer = questions[currentQuestionIndex].correct;
-var clickViewScores = document.getElementById("view-score");
 
-var answerClick = function(event) {
-    event.preventDefault();
-    var chosenAnswer = event.target.textContent;
-    correctAnswer = questions[currentQuestionIndex].correct;
-    // checks answer if it is right or wrong
-    var answerDetermination = document.querySelector("#answer-determination");
-    if (chosenAnswer !== correctAnswer) {
-        adjustTime(-60);
-        answerDetermination.textContent = "Wrong!";
-        currentQuestionIndex++;
-        if (currentQuestionIndex >= questions.length) {
-            endQuizPage();
-        } else {renderQuestion(questions[currentQuestionIndex])};
-
-    }
-    
-    else if (chosenAnswer === correctAnswer) {
-        currentQuestionIndex++;
-        answerDetermination.textContent = "Correct!";
-        userScore++;
-        if (currentQuestionIndex >= questions.length) {
-            endQuizPage();
-        } else {renderQuestion(questions[currentQuestionIndex])};
-    }
-};
-
+// begins quiz
 var quiz = function (event) {
     event.preventDefault();
-    resetDisplay();
+    resetQuiz();
     renderQuestion(questions[currentQuestionIndex]);
 };
-
-function resetDisplay() {
+// brings back to start quiz page
+function resetQuiz() {
     questionBox.innerHTML="";
     document.querySelector("#intro-page").style.display = "none";
 }
+
+// local storage function
 function highScores() {
-    // stores high score on local storage, meaning your score will save.
     let data = localStorage.getItem("object");
-    // pulls data
     let getData = JSON.parse(data);
     let name = getData.name;
     let score = getData.score;
     questionBox.innerHTML = "";
-    // switched to template litral
+    // switched to template literal from a normal string + string
     questionBox.innerHTML = `${name} ${score}`;
 }
 clickViewScores.addEventListener("click", () => {
@@ -175,16 +175,16 @@ clickViewScores.addEventListener("click", () => {
 
 var initials; 
 function endQuizPage() {
-    resetDisplay();
+    resetQuiz();
     timerEl.textContent = "";
-    clearInterval(quizDuration);
+    clearInterval(quizLength);
     var endPage = document.createElement("h2");
     questionBox.appendChild(endPage);
-    // assigning a blank string to a variable to use for initialbox.
+
     let blank = document.querySelector("#answer-determination");
     blank.innerHTML = "";
-    // switched to template literal
-    endPage.innerHTML = `Congratulations, your score was ${userScore}. Please, enter your initials!`;
+
+    endPage.innerHTML = `Congratulations on completing the quiz, your score was: ${userScore}!`;
 
     var initialBox = document.createElement("input");
     blank.appendChild(initialBox);
@@ -192,9 +192,10 @@ function endQuizPage() {
     var submitInitialBtn = document.createElement("button");
     submitInitialBtn.textContent = "Submit";
     blank.appendChild(submitInitialBtn);
-    // allows you to store name
+
     submitInitialBtn.addEventListener("click", () => {
-        // makes it to where you need to submit initials
+        // rest variable
+        
         if (initialBox.value.length === 0) return false;
 
         let storeInitials = (...input) => {
@@ -202,7 +203,7 @@ function endQuizPage() {
             localStorage.setItem("object", data)
         }
         storeInitials(initialBox.value, userScore);
-        // resets game back to original page.
+
         var playAgain = document.createElement("button");
         playAgain.textContent= "Play Again!";
         blank.appendChild(playAgain);
@@ -213,7 +214,7 @@ function endQuizPage() {
     });
 
     document.querySelector("input").value = "";
-    // submits initials
+
     initialBox.addEventListener("submit", endQuizPage);
     
 };
@@ -224,5 +225,3 @@ function renderInitials() {
 )};
 
 startGameBtn.addEventListener('click', quiz);
-
-
