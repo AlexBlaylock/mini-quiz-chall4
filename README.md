@@ -7,10 +7,16 @@ Again, a majority of the code that I used is from https://github.com/njthanhtran
 
 Thank you to Jennifer for having fantastic work that gave me a good lead and helped me really understand the project.
 
+
+UPDATE: 10/23/23 - 
+
+redid almost all of the script.js
+added some more styling (not much)
+
 Screenshots:
 ![SS1, showcasing home](chall4ss1.png)
 ![SS2, showcasing question + timer](chall4ss2.png)
-![SS3. showcasing save score](chall4ss2-1.png)
 
 Link to repo: https://github.com/AlexBlaylock/mini-quiz-chall4
 Link to page: https://alexblaylock.github.io/mini-quiz-chall4/
+

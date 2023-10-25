@@ -3,22 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Code Quiz</title>
-    <link rel="stylesheet" href="./assets/style.css">
+    <title>Quiz Game</title>
+    <link rel="stylesheet" href="assets/style.css">
 </head>
 <body>
-    <div>
-        <button class="view-score" id="view-score">View high score</button>
+    <h1>Quiz Game</h1>
+
+    <button id="start-btn">Start Quiz</button>
+
+    <div id="quiz-container">
+        <p id="question">Welcome to the Quiz!</p>
+        <div id="choices"></div>
+        <p id="answer-feedback"></p>
+        <p id="timer">Time: 60 s</p>
     </div>
-    <div id="intro-page">
-    <h1>Coding Quiz Challenge</h1>
-    <p>This quiz is timed, incorrect answers will remove time from the clock!</p>
-    <button id="start">Start Quiz</button>
-    </div>
-    <h2 id="countdown"></h2>
-    <div class="quiz-box" id="quiz-box"></div>
-    <div id="answer-determination"></div>
-    
-<script src="./assets/script.js"></script>
+
+    <button id="high-scores-btn">View High Scores</button>
+    <!-- leader board -->
+    <ul id="high-scores-list"></ul>
+
+    <script src="assets/script.js"></script>
 </body>
 </html>

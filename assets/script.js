@@ -1,4 +1,3 @@
-// questions i created.
 const questions = [{
     q: "When was JavaScript created?",
     a: "1. 1995",
@@ -56,182 +55,131 @@ const questions = [{
     d: "4. HTMKLG",
     correct: "1. HTML",
 }];
-// global variables, getelementbyid is more specific then query selectors.
-var startGameBtn = document.getElementById("start");
-var timerEl = document.getElementById("countdown");
-var timeRemaining = 120; // adjusted time variable
-var quizLength;
-var questionBox = document.querySelector("#quiz-box");
+  
+    let currentQuestionIndex = 0;
+    let score = 0;
+    let time = 60; 
 
-function timer() {
-     // switched to template literal from a normal string + string
-    timerEl.textContent = `Time remaining: ${timeRemaining}s`;
-    quizLength = setInterval(function () {
-        // tick down timer every 1 second
-        if (timeRemaining > 0) {
-            adjustTime(-1);
-        } else {
-            endQuizPage();
+    const timePenalty = 6; // lose 6 seconds when you get the answer wrong
+  
+    const questionElement = document.getElementById("question");
+    const choicesElement = document.getElementById("choices");
+    const timerElement = document.getElementById("timer");
+    const highScoresBtn = document.getElementById("high-scores-btn")
+
+    function startQuiz() {
+        startBtn.style.display = "none";
+        highScoresBtn.style.display = "none";
+          displayQuestion();
+          const timerInterval = setInterval(() => {
+            if (time > 0) {
+                time--;
+                updateTimerDisplay();
+                } else {
+                clearInterval(timerInterval);
+                endGame();
+            }
+        }, 1000);
+    }
+      
+        function updateTimerDisplay() {
+          timerElement.textContent = `Time: ${time} s`;
         }
-    }, 1000); //set interval will update every 1000ms
-}
-// function to tick time down
-function adjustTime(amount) {
-    // adjusts time until that there is 0 seconds remaining, 
-    timeRemaining += amount;
-    if (timeRemaining < 0) {
-        timeRemaining = 0;
+  
+    function displayQuestion() {
+      if (currentQuestionIndex < questions.length) {
+        const question = questions[currentQuestionIndex];
+        questionElement.textContent = question.q;
+        choicesElement.innerHTML = "";
+  
+        for (let option of ["a", "b", "c", "d"]) {
+            const choiceBtn = document.createElement("button");
+            choiceBtn.textContent = question[option];
+            choiceBtn.addEventListener("click", () => checkAnswer(question[option], question.correct));
+            choicesElement.appendChild(choiceBtn);
+        }
+      } else {
+        endGame();
+      }
     }
-    // switched to template literal from a normal string + string
-    timerEl.textContent = `Time remaining: ${timeRemaining}s`;
-}
+  
+    // if choice is correct, add to score, if wrong, remove time 
+    function checkAnswer(choice, correct) {
+        const feedback = document.getElementById("answer-feedback")
+    
+        if (choice === correct) {
+            score++;
+            feedback.textContent = "Correct"
+          } else {
+            time -= timePenalty;
+            if (time < 0) time = 0;
+            feedback.textContent = "Incorrect"
+        }
 
-// variables for questions and score
-var currentQuestionIndex = 0;
-var userScore = 0;
-var correctAnswer = questions[currentQuestionIndex].correct;
-var clickViewScores = document.getElementById("view-score");
+        feedback.style.display = "block";
 
-// function for clicking on answers, if wrong -30s, if right no time is lost.
-var answerClick = function(event) {
-    event.preventDefault();
-    var userAnswer = event.target.textContent;
-    correctAnswer = questions[currentQuestionIndex].correct;
-    // determine if answer is wrong or right
-    var answerDetermination = document.querySelector("#answer-determination");
-    if (userAnswer !== correctAnswer) {
-        adjustTime(-30);
-        answerDetermination.textContent = "Wrong!";
-        currentQuestionIndex++;
-        if (currentQuestionIndex >= questions.length) {
-            endQuizPage();
-        } else {renderQuestion(questions[currentQuestionIndex])};
-
-    }
-    // correct answer statement
-    else if (userAnswer === correctAnswer) {
-        currentQuestionIndex++;
-        answerDetermination.textContent = "Correct!";
-        userScore++;
-        if (currentQuestionIndex >= questions.length) {
-            endQuizPage();
-        } else {renderQuestion(questions[currentQuestionIndex])};
-    }
-};
-
-
-startGameBtn.onclick = timer;
-// questions + answer options, create elements
-var renderQuestion = function (question) {
-    questionBox.innerHTML = "";
-
-    var questionHeader = document.createElement("h2");
-    questionHeader.textContent = question.q;
-
-    var answerA = document.createElement("button");
-    answerA.textContent = question.a;
-    answerA.addEventListener("click", answerClick);
-
-    var answerB = document.createElement("button");
-    answerB.textContent = question.b;
-    answerB.addEventListener("click", answerClick);
-
-    var answerC = document.createElement("button");
-    answerC.textContent = question.c;
-    answerC.addEventListener("click", answerClick);
-
-    var answerD = document.createElement("button");
-    answerD.textContent = question.d;
-    answerD.addEventListener("click", answerClick);
-
-    questionBox.appendChild(questionHeader);
-    questionBox.appendChild(answerA);
-    questionBox.appendChild(answerB);
-    questionBox.appendChild(answerC);
-    questionBox.appendChild(answerD);
-}
-
-
-// begins quiz
-var quiz = function (event) {
-    event.preventDefault();
-    // resets quiz to initial state
-    resetQuiz();
-    renderQuestion(questions[currentQuestionIndex]);
-};
-// brings back to start quiz page
-function resetQuiz() {
-    questionBox.innerHTML="";
-    document.querySelector("#intro-page").style.display = "none";
-}
-
-// local storage function
-function highScores() {
-    let data = localStorage.getItem("object");
-    let getData = JSON.parse(data);
-    let name = getData.name;
-    let score = getData.score;
-    questionBox.innerHTML = "";
-    // switched to template literal from a normal string + string
-    questionBox.innerHTML = `${name} ${score}`;
-}
-clickViewScores.addEventListener("click", () => {
-    highScores();
-})
-
-var initials; 
-function endQuizPage() {
-    // resets quiz to initial state
-    resetQuiz();
-    timerEl.textContent = "";
-    clearInterval(quizLength);
-    // creat eleemnts to dynamically create buttons and input boxes.
-    var endPage = document.createElement("h2");
-    questionBox.appendChild(endPage);
-
-    let blank = document.querySelector("#answer-determination");
-    blank.innerHTML = "";
-
-    // added template literal
-    endPage.innerHTML = `Congratulations on completing the quiz, your score was: ${userScore}!`;
-
-    var initialBox = document.createElement("input");
-    blank.appendChild(initialBox);
-
-    var submitInitialBtn = document.createElement("button");
-    submitInitialBtn.textContent = "Submit";
-    blank.appendChild(submitInitialBtn);
-
-    submitInitialBtn.addEventListener("click", () => {
-        // rest variable
+        setTimeout(() => { 
+            feedback.style.display = "none";
+            feedback.textContent = " ";
+        }, 1500);
         
-        if (initialBox.value.length === 0) return false;
-
-        let storeInitials = (...input) => {
-            let data = JSON.stringify({ "name":input[0], "score":input[1]})
-            localStorage.setItem("object", data)
-        }
-        storeInitials(initialBox.value, userScore);
-
-        var playAgain = document.createElement("button");
-        playAgain.textContent= "Play Again!";
-        blank.appendChild(playAgain);
-
-        playAgain.addEventListener("click", () => {
-            location.reload();
-        })
+      currentQuestionIndex++;
+      displayQuestion();
+    }
+  
+    function saveScore(initials) {
+      const scoreData = {
+        initials: initials,
+        score: score,
+        };
+  
+        const highScores = JSON.parse(localStorage.getItem("highScores")) || [];
+        highScores.push(scoreData);
+        highScores.sort((a, b) => b.score - a.score);
+        localStorage.setItem("highScores", JSON.stringify(highScores));
+  
+        displayHighScores(highScores);
+    }
+    
+    // function displays high scores when you press on the view high scores button
+    function displayHighScores(highScores) {
+        const highScoresListElement = document.getElementById("high-scores-list");
+        highScoresListElement.innerHTML = "";
+  
+        highScores.forEach((scoreData, index) => {
+            const scoreItemElement = document.createElement("li");
+            scoreItemElement.textContent = `${index + 1}. ${scoreData.initials}: ${scoreData.score}`;
+            highScoresListElement.appendChild(scoreItemElement);
+      });
+    }
+  
+    document.getElementById("high-scores-btn").addEventListener("click", function () {
+        const highScores = JSON.parse(localStorage.getItem("highScores")) || [];
+        displayHighScores(highScores);
     });
 
-    document.querySelector("input").value = "";
-
-    initialBox.addEventListener("submit", endQuizPage);
     
-};
-function renderInitials() {
-    submitInitialBtn.addEventListener('click', function(event) {
-        event.preventDefault;
-}
-)};
+    // displays final score, lets you input and save it
+    function endGame() {
+        // hides timer on end game
+        timerElement.style.display = "none";
+        // tells you what score you got
+        questionElement.textContent = `Quiz over, you got a ${score}`;
+        // hides the choices
+        choicesElement.innerHTML = "";
+        // lets you input initials
+        const initialsInput = document.createElement("input");
+        initialsInput.placeholder = "Enter your initials";
+        // save your initials/score
+        const saveBtn = document.createElement("button");
+        saveBtn.textContent = "Save Your Score";
+        // on click, adds your saveScore to the initialInputs value
+        saveBtn.addEventListener("click", () => saveScore(initialsInput.value));
+        choicesElement.appendChild(initialsInput);
+        choicesElement.appendChild(saveBtn);
+    }
 
-startGameBtn.addEventListener('click', quiz);
-
+    //start game on button click
+    const startBtn = document.getElementById("start-btn");
+    startBtn.addEventListener("click", startQuiz);
+  
